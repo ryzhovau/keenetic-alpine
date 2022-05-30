@@ -3,7 +3,7 @@
 set -e
 
 echo 'Downloading sources…'
-SRC_URL='http://dl-cdn.alpinelinux.org/alpine/v3.15/releases/aarch64/alpine-minirootfs-3.15.4-aarch64.tar.gz'
+SRC_URL='http://dl-cdn.alpinelinux.org/alpine/v3.16/releases/aarch64/alpine-minirootfs-3.16.0-aarch64.tar.gz'
 SRC=$(echo $SRC_URL | grep -o '[^/]*$')
 [ -f $SRC ] || wget $SRC_URL
 
