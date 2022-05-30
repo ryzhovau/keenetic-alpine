@@ -1,2 +1,21 @@
 # keenetic-alpine
 Alpine Linux on Keenetic Peak
+
+## Requirements
+* Keenetic router with aarch64 CPU (only KN-2710 for now),
+* ext2/3/4 formatted USB storage,
+* 3.9 Alpha 0.3 (3.09.A.0.0-3) firmware or newer.
+
+## Installasion
+* Make an installation archive with this script or download it from Release page,
+* Put `install-alpine-minirootfs-*-aarch64.tar.gz` into `install` folder on USB storage,
+* Pick appropriate partition from Keenetic CLI:
+
+```
+opkg chroot
+opkg initrc /opt/etc/ndm/initrc
+opkg opkg disk <volume>
+```
+
+## Usage
+You may connect to Alpine Linux via SSH root:alpine, TCP2222 port.
