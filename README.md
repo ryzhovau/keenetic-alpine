@@ -7,7 +7,7 @@ Alpine Linux on Keenetic Peak
 * 3.9 Alpha 0.3 (3.09.A.0.0-3) firmware or newer.
 
 ## Installation
-* Make an installation archive from Entware/Alpine on router or download it from Release page,
+* Make an installation archive from Entware/Alpine on router or [download](https://github.com/ryzhovau/keenetic-alpine/releases) it from here,
 * Put `install-alpine-minirootfs-*-aarch64.tar.gz` into `install` folder on USB storage,
 * Pick appropriate partition from Keenetic CLI:
 
