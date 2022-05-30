@@ -19,3 +19,5 @@ opkg opkg disk <volume>
 
 ## Usage
 You may connect to Alpine Linux via SSH root:alpine, TCP2222 port.
+
+See you on https://forum.keenetic.com
