@@ -28,7 +28,9 @@ for i in wan user netfilter usb fs time button schedule neighbour ifcreated \
 done
 # Few fixes for OpenRC init system
 touch $BASE/run/openrc/softlevel
-cat <<'EOF' > $BASE/etc/rc.conf
+cat <<'EOF' >> $BASE/etc/rc.conf
+
+# chroot settings
 rc_sys="prefix"
 rc_controller_cgroups="NO"
 rc_depend_strict="NO"
