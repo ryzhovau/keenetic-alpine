@@ -27,8 +27,14 @@ for i in wan user netfilter usb fs time button schedule neighbour ifcreated \
     mkdir -p $BASE/etc/ndm/$i.d
 done
 # Few fixes for OpenRC init system
+mkdir $BASE/run/openrc
 touch $BASE/run/openrc/softlevel
-cat <<'EOF' >> $BASE/etc/rc.conf
+cat <<'EOF' > $BASE/etc/rc.conf
+# default settings
+rc_tty_number=12
+respawn_delay=2
+respawn_max=5
+respawn_period=1800
 
 # chroot settings
 rc_sys="prefix"
