@@ -1,8 +1,8 @@
 # keenetic-alpine
-Alpine Linux on Keenetic Peak
+Alpine Linux on Keenetic
 
 ## Requirements
-* Keenetic router with aarch64 CPU (only KN-2710 for now),
+* Keenetic router with aarch64 CPU,
 * ext2/3/4 formatted USB storage,
 * 3.9 Alpha 0.3 (3.09.A.0.0-3) firmware or newer.
 

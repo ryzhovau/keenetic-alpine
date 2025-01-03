@@ -3,12 +3,12 @@
 set -e
 
 echo 'Downloading sources…'
-SRC_URL='http://dl-cdn.alpinelinux.org/alpine/v3.16/releases/aarch64/alpine-minirootfs-3.16.0-aarch64.tar.gz'
+SRC_URL='http://dl-cdn.alpinelinux.org/alpine/v3.21/releases/aarch64/alpine-minirootfs-3.21.0-aarch64.tar.gz'
 SRC=$(echo $SRC_URL | grep -o '[^/]*$')
 [ -f $SRC ] || wget $SRC_URL
 
 echo 'Unpacking…'
-BASE='chroot_alpine'
+BASE='alpine_rootfs'
 
 # Safe removing previous root folder
 if [ -d  $BASE ]; then
@@ -21,10 +21,19 @@ mkdir -p $BASE
 tar -xzf $SRC -C $BASE
 
 echo 'Preparing chroot environment…'
-# Adding folders for hooks
-for i in button fs ifcreated ifdestroyed ifipchanged ifstatechanged neighbour netfilter schedule sms time usb user wan; do
+# Adding folders for hooks https://github.com/ndmsystems/packages/wiki/Opkg-Component#hook-scripts
+for i in wan user netfilter usb fs time button schedule neighbour ifcreated \
+  ifdestroyed ifipchanged ifip6changed iflayerchanged sms; do
     mkdir -p $BASE/etc/ndm/$i.d
 done
+# Few fixes for OpenRC init system
+touch $BASE/run/openrc/softlevel
+cat <<'EOF' > $BASE/etc/rc.conf
+rc_sys="prefix"
+rc_controller_cgroups="NO"
+rc_depend_strict="NO"
+rc_need="!hwdrivers !klogd !machine-id !mdev !modloop !osclock !rdate !s6-svscan !sysfsconf !syslog !watchdog !net !dev !udev-mount !sysfs !checkfs !fsck !netmount !logger !clock !modules"
+EOF
 
 # Adding necessary packages
 mount -o bind /dev $BASE/dev
@@ -33,6 +42,7 @@ mount -o bind /sys $BASE/sys
 PATH=/usr/sbin:/usr/bin:/sbin:/bin SHELL=/bin/sh HOME=/root TERM=xterm \
     /opt/sbin/chroot $BASE /bin/sh -x <<'EOF'
 apk add --no-cache alpine-base dropbear
+rc-update --update
 rc-update add dropbear
 echo 'root:alpine' | chpasswd
 EOF
@@ -40,24 +50,9 @@ umount $BASE/dev
 umount $BASE/proc
 umount $BASE/sys
 
-# Few fixes for OpenRC init system
+# System tweaks
 echo 'nameserver 127.0.0.1' > $BASE/etc/resolv.conf
-echo > $BASE/etc/fstab
 sed -i -e 's|^DROPBEAR_OPTS.*|DROPBEAR_OPTS="-p 2222"|' $BASE/etc/conf.d/dropbear
-rm $BASE/lib/sysctl.d/*
-for i in dev devfs firstboot fsck killprocs localmount logger loopback mdev \
-    modloop mount-ro mtab networking procfs root sysfs sysfsconf syslog \
-    termencoding udhcpd urandom watchdog; do
-    cat <<'EOF' > $BASE/etc/init.d/$i
-#!/sbin/openrc-run
-
-start()
-{
-    return 0
-}
-EOF
-    chmod +x $BASE/etc/init.d/$i
-done
 
 # Make start script
 cat <<'EOF' > $BASE/etc/ndm/initrc
